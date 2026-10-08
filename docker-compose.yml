@@ -4,11 +4,11 @@ services:
     image: postgres:16
     container_name: helpdesk-db
     environment:
-      POSTGRES_DB: helpdesk
-      POSTGRES_USER: helpdesk_user
-      POSTGRES_PASSWORD: helpdesk_123
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
