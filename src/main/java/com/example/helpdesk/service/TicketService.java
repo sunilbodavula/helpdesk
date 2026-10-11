@@ -4,6 +4,7 @@ package com.example.helpdesk.service;
 import com.example.helpdesk.dto.TicketCreateRequest;
 import com.example.helpdesk.dto.TicketResponse;
 import com.example.helpdesk.dto.TicketUpdateRequest;
+import com.example.helpdesk.exception.ResourceNotFoundException;
 import com.example.helpdesk.mapper.TicketMapper;
 import com.example.helpdesk.model.Ticket;
 import com.example.helpdesk.model.User;
@@ -47,7 +48,6 @@ public class TicketService {
 
     @Transactional
     public TicketResponse createTicket(TicketCreateRequest request){
-        System.out.println("CREATE REQUEST: " + request);
         User creator = findUser(request.createdById());
         User assignee = request.assignedToId() != null ? findUser(request.assignedToId()) : null;
 
@@ -83,12 +83,12 @@ public class TicketService {
 
     private Ticket findTicket(Long id){
         return ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", id));
     }
 
     private User findUser(Long id){
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
 }
 
