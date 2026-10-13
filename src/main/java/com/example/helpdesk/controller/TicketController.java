@@ -1,13 +1,16 @@
 package com.example.helpdesk.controller;
 
 
-import com.example.helpdesk.dto.TicketCreateRequest;
-import com.example.helpdesk.dto.TicketResponse;
-import com.example.helpdesk.dto.TicketUpdateRequest;
+import com.example.helpdesk.dto.*;
 import com.example.helpdesk.model.Ticket;
+import com.example.helpdesk.model.TicketPriority;
+import com.example.helpdesk.model.TicketStatus;
 import com.example.helpdesk.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +29,17 @@ public class TicketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TicketResponse>> getAllTickets(){
-        return  ResponseEntity.ok(ticketService.getAllTickets());
+    public ResponseEntity<PageResponse<TicketResponse>> getAllTickets(
+            @RequestParam(required = false)TicketStatus status,
+            @RequestParam(required = false) TicketPriority priority,
+            @RequestParam(required = false) Long createdById,
+            @RequestParam(required = false) Long assignedToId,
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            ){
+        TicketFilter filter = new TicketFilter(status, priority, createdById, assignedToId, search);
+        return ResponseEntity.ok(ticketService.getTickets(filter, pageable));
+
     }
 
     @GetMapping("/{id}")
