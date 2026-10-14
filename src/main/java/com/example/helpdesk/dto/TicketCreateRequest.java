@@ -15,8 +15,5 @@ public record TicketCreateRequest (
 
         TicketPriority priority,
 
-        @NotNull(message = "createdById is required")
-        Long createdById,
-
         Long assignedToId
 ){}

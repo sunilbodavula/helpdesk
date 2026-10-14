@@ -5,6 +5,7 @@ import com.example.helpdesk.dto.*;
 import com.example.helpdesk.model.Ticket;
 import com.example.helpdesk.model.TicketPriority;
 import com.example.helpdesk.model.TicketStatus;
+import com.example.helpdesk.security.AuthUser;
 import com.example.helpdesk.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,8 +50,9 @@ public class TicketController {
     }
 
     @PostMapping
-    public ResponseEntity<TicketResponse> createTicket(@Valid @RequestBody TicketCreateRequest ticketCreateRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(ticketCreateRequest));
+    public ResponseEntity<TicketResponse> createTicket(@Valid @RequestBody TicketCreateRequest request,
+                                                       @AuthenticationPrincipal AuthUser principal){
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(request, principal.id()));
     }
 
     @PutMapping("/{id}")

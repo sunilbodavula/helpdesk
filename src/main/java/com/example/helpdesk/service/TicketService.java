@@ -86,8 +86,8 @@ public class TicketService {
     }
 
     @Transactional
-    public TicketResponse createTicket(TicketCreateRequest request){
-        User creator = findUser(request.createdById());
+    public TicketResponse createTicket(TicketCreateRequest request, Long creatorId){
+        User creator = findUser(creatorId);
         User assignee = request.assignedToId() != null ? findUser(request.assignedToId()) : null;
 
         Ticket ticket = Ticket.builder()
