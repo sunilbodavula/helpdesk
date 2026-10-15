@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,30 +38,35 @@ public class TicketController {
             @RequestParam(required = false) Long createdById,
             @RequestParam(required = false) Long assignedToId,
             @RequestParam(required = false) String search,
-            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal AuthUser principal
             ){
         TicketFilter filter = new TicketFilter(status, priority, createdById, assignedToId, search);
-        return ResponseEntity.ok(ticketService.getTickets(filter, pageable));
+        return ResponseEntity.ok(ticketService.getTickets(filter, pageable, principal));
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TicketResponse> getTicketById(@PathVariable Long id){
-        return ResponseEntity.ok(ticketService.getTicketById(id));
+    public ResponseEntity<TicketResponse> getTicketById(@PathVariable Long id,
+                                                        @AuthenticationPrincipal AuthUser principal){
+        return ResponseEntity.ok(ticketService.getTicketById(id, principal));
     }
 
     @PostMapping
     public ResponseEntity<TicketResponse> createTicket(@Valid @RequestBody TicketCreateRequest request,
                                                        @AuthenticationPrincipal AuthUser principal){
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(request, principal.id()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(request, principal));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TicketResponse> updateTicket(@PathVariable Long id, @Valid @RequestBody TicketUpdateRequest request){
-        return ResponseEntity.ok(ticketService.updateTicket(id, request));
+    public ResponseEntity<TicketResponse> updateTicket(@PathVariable Long id,
+                                                       @Valid @RequestBody TicketUpdateRequest request,
+                                                       @AuthenticationPrincipal AuthUser principal){
+        return ResponseEntity.ok(ticketService.updateTicket(id, request, principal));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id){
         ticketService.deleteTicket(id);
         return ResponseEntity.noContent().build();
