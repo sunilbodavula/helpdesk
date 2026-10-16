@@ -25,6 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.helpdesk.repository.CommentRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,16 +38,19 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final TicketMapper ticketMapper;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public TicketService(
             TicketRepository ticketRepository,
             UserRepository userRepository,
-            TicketMapper ticketMapper
+            TicketMapper ticketMapper,
+            CommentRepository commentRepository
     ){
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.ticketMapper = ticketMapper;
+        this.commentRepository = commentRepository;
     }
 
     private static final List<String> SORTABLE_FIELDS =
@@ -146,10 +150,11 @@ public class TicketService {
     public void deleteTicket(Long id){
         Ticket ticket = ticketRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Ticket", id));
-        ticketRepository.delete(findTicket(id));
+        commentRepository.deleteTicketById(id);
+        ticketRepository.delete(ticket);
     }
 
-    private Ticket findVisibleTicket(Long id, AuthUser actor){
+    public Ticket findVisibleTicket(Long id, AuthUser actor){
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket", id));
         if(!TicketAccessPolicy.canView(ticket, actor)){
