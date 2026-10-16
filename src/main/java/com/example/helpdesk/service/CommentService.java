@@ -45,7 +45,7 @@ public class CommentService {
         Pageable oldestFirst = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by(Sort.Direction.ASC, "createdAt", "id"));
 
-        Page<Comment> page = commentRepository.findByTicketId(ticketId, oldestFirst);
+        Page<Comment> page = commentRepository.findTicketById(ticketId, oldestFirst);
         return PageResponse.of(page.map(commentMapper::toResponse));
     }
 

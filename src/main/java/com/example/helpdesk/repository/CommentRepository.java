@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @EntityGraph(attributePaths = "author")
-    Page<Comment> findByTicketId(Long ticketId, Pageable pageable);
+    Page<Comment> findTicketById(Long ticketId, Pageable pageable);
 
     @Modifying
     @Query("delete from Comment c where c.ticket.id = :ticketId")
