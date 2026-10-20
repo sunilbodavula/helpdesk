@@ -6,6 +6,9 @@ import com.example.helpdesk.dto.RegisterRequest;
 import com.example.helpdesk.dto.UserResponse;
 import com.example.helpdesk.security.AuthUser;
 import com.example.helpdesk.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,14 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @Operation(summary = "Register a new account", description = "Public endpoint. Returns no access" +
+            "token immediately-no separate login step needed for registering.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Account created"),
+            @ApiResponse(responseCode = "400", description = "Validation failed (weak password, " +
+                    "invalid email, etc.,)"),
+            @ApiResponse(responseCode = "409", description = "Email already exists")
+    })
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));

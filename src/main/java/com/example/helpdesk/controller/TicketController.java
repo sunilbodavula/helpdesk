@@ -7,6 +7,7 @@ import com.example.helpdesk.model.TicketPriority;
 import com.example.helpdesk.model.TicketStatus;
 import com.example.helpdesk.security.AuthUser;
 import com.example.helpdesk.service.TicketService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Tickets", description = "CRUD plus role-based visibility: USER sees own tickets, " +
+        "Agent sees unassigned + own tickets, ADMIN sees all")
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
