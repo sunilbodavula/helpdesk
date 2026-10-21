@@ -99,6 +99,16 @@
             <version>2.6.0</version>
         </dependency>
 
+        <!-- Flyway: the second artifact is required for PostgreSQL since Flyway 10 -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

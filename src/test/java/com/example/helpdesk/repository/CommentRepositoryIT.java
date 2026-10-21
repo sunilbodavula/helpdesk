@@ -1,6 +1,6 @@
 package com.example.helpdesk.repository;
 
-import com.example.helpdesk.IntegrationTestBase;
+import com.example.helpdesk.integration.IntegrationTestBase;
 import com.example.helpdesk.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
